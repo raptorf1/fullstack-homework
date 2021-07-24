@@ -6,7 +6,7 @@ class FieldsController < ActionController::Base
       field[:crops].each do |crop|
         field_deltas.push(crop[:crop][:humus_delta])
       end
-      field.store(:humus_balance, field_deltas.sum)
+      field.store(:balance, field_deltas.sum)
     end
     render json: all_fields
   end
