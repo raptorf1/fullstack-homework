@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'helpers'
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
@@ -11,4 +12,5 @@ RSpec.configure do |config|
   config.use_active_record = false
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
+  config.include Helpers
 end
