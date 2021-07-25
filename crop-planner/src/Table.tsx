@@ -1,35 +1,34 @@
-import { PureComponent } from 'react'
-import { sortBy } from 'lodash'
+import { PureComponent } from "react";
+import { sortBy } from "lodash";
+import CropSelect from "./CropSelect";
+import { Crop, Field, SeasonalCrop } from "./types";
+import { fetchCrops, fetchFields, fetchNewFields } from "./api";
+import buildNewFieldsState from "./buildNewFieldsState";
 
-import CropSelect from './CropSelect'
-import { Crop, Field, SeasonalCrop } from './types'
-import { fetchCrops, fetchFields } from './api'
-import buildNewFieldsState from './buildNewFieldsState'
-
-type Props = {}
+type Props = {};
 
 type State = {
-  allCrops: Array<Crop>,
-  fields: Array<Field>
-}
+  allCrops: Array<Crop>;
+  fields: Array<Field>;
+};
 
 export default class Table extends PureComponent<Props, State> {
   constructor(props: Props) {
-    super(props)
+    super(props);
 
     this.state = {
       allCrops: [],
       fields: [],
-    }
+    };
   }
 
   componentDidMount = async () =>
     this.setState({
       fields: await fetchFields(),
       allCrops: await fetchCrops(),
-    })
+    });
 
-  render = () =>
+  render = () => (
     <div className="table">
       <div className="table__row table__row--header">
         <div className="table__cell">Field name</div>
@@ -42,30 +41,51 @@ export default class Table extends PureComponent<Props, State> {
         <div className="table__cell table__cell--right">Humus balance</div>
       </div>
 
-      {sortBy(this.state.fields, field => field.name).map(field => this.renderFieldRow(field))}
+      {sortBy(this.state.fields, (field) => field.name).map((field) =>
+        this.renderFieldRow(field)
+      )}
     </div>
+  );
 
-  renderFieldRow = (field: Field) =>
+  renderFieldRow = (field: Field) => (
     <div className="table__row" key={field.id}>
       <div className="table__cell">{field.name}</div>
       <div className="table__cell table__cell--right">{field.area}</div>
 
-      {sortBy(field.crops, crop => crop.year).map(seasonalCrop => this.renderCropCell(field, seasonalCrop))}
+      {sortBy(field.crops, (crop) => crop.year).map((seasonalCrop) =>
+        this.renderCropCell(field, seasonalCrop)
+      )}
 
-      <div className="table__cell table__cell--right">{field.balance}</div>
+      <div className="table__cell table__cell--right">
+        {parseFloat(field.balance).toFixed(2)}
+      </div>
     </div>
+  );
 
-  renderCropCell = (field: Field, seasonalCrop: SeasonalCrop) =>
+  renderCropCell = (field: Field, seasonalCrop: SeasonalCrop) => (
     <div className="table__cell table__cell--center table__cell--with-select">
       <CropSelect
         selectedCrop={seasonalCrop.crop}
         allCrops={this.state.allCrops}
-        onChange={newCrop => this.changeFieldCrop(newCrop, field.id, seasonalCrop.year)}
+        onChange={(newCrop) =>
+          this.changeFieldCrop(newCrop, field.id, seasonalCrop.year)
+        }
       />
     </div>
+  );
 
-  changeFieldCrop = (newCrop: Crop | null, fieldId: number, cropYear: number) =>
+  changeFieldCrop = async (
+    newCrop: Crop | null,
+    fieldId: number,
+    cropYear: number
+  ) => {
+    if (newCrop) {
+      this.setState({
+        fields: await fetchNewFields(fieldId, cropYear, newCrop?.value),
+      });
+    }
     this.setState(
-      buildNewFieldsState(this.state.fields, newCrop, fieldId, cropYear),
-    )
+      buildNewFieldsState(this.state.fields, newCrop, fieldId, cropYear)
+    );
+  };
 }
