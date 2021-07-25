@@ -81,7 +81,12 @@ export default class Table extends PureComponent<Props, State> {
   ) => {
     if (newCrop) {
       this.setState({
-        fields: await fetchNewFields(fieldId, cropYear, newCrop?.value),
+        fields: await fetchNewFields(
+          fieldId,
+          cropYear,
+          newCrop?.value,
+          JSON.stringify(this.state.fields)
+        ),
       });
     }
     this.setState(

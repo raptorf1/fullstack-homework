@@ -8,10 +8,11 @@ export const fetchFields = async (): Promise<Array<Field>> =>
 export const fetchNewFields = async (
   fieldId: number,
   year: number,
-  cropId: number
+  cropId: number,
+  currentFields: string
 ): Promise<Array<Field>> =>
   await fetch(
-    `${SOIL_SERVICE_URL}/fields/?fieldId=${fieldId}&year=${year}&newCrop=${cropId}`
+    `${SOIL_SERVICE_URL}/fields/?fieldId=${fieldId}&year=${year}&newCrop=${cropId}&currentFields=${currentFields}`
   ).then((response) => response.json());
 
 export const fetchCrops = async (): Promise<Array<Crop>> =>
