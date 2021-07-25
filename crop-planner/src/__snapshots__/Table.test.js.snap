@@ -179,6 +179,11 @@ exports[`<Table /> loads data when component mounted 1`] = `
     </div>
     <div
       className="table__cell table__cell--right"
+      style={
+        Object {
+          "backgroundColor": "#5D995B",
+        }
+      }
     >
       NaN
     </div>

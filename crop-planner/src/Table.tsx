@@ -56,7 +56,13 @@ export default class Table extends PureComponent<Props, State> {
         this.renderCropCell(field, seasonalCrop)
       )}
 
-      <div className="table__cell table__cell--right">
+      <div
+        className="table__cell table__cell--right"
+        style={{
+          backgroundColor:
+            field.oldbalance > field.balance ? "#ff9999" : "#5D995B",
+        }}
+      >
         {parseFloat(field.balance).toFixed(2)}
       </div>
     </div>
